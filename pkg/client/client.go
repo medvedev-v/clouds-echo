@@ -8,16 +8,16 @@ import (
 	"time"
 )
 
-type CloudsResponses []struct {
+type RequestResults []struct {
 	URL          string `json:"url"`
 	Ping         int    `json:"ping"`
-	ResponseCode string `json:"responsecode"`
+	Code string `json:"code"`
 }
 
-type CloudResponse struct {
+type RequestResult struct {
 	URL          string `json:"url"`
 	Ping         int    `json:"ping"`
-	ResponseCode string `json:"responsecode"`
+	Code string `json:"code"`
 }
 
 type Clouds []struct {
@@ -35,7 +35,7 @@ type job struct {
 
 type result struct {
 	index int
-	resp  CloudResponse
+	resp  RequestResult
 }
 
 func GetCloudsInfo() (clouds Clouds) {
@@ -51,7 +51,7 @@ func GetCloudsInfo() (clouds Clouds) {
 	return
 }
 
-func Get(url string) (cloudResponse CloudResponse) {
+func Get(url string) (requestResult RequestResult) {
 	start := time.Now()
 	client := &http.Client{
 		Timeout: 5 * time.Second, // добавляем таймаут для запроса
@@ -62,26 +62,26 @@ func Get(url string) (cloudResponse CloudResponse) {
 		end := time.Now()
 		duration := end.Sub(start).Milliseconds()
 
-		cloudResponse.URL = url
-		cloudResponse.ResponseCode = "ERROR: " + err.Error()
-		cloudResponse.Ping = int(duration)
+		requestResult.URL = url
+		requestResult.Code = "ERROR: " + err.Error()
+		requestResult.Ping = int(duration)
 		return
 	}
 
 	end := time.Now()
 	duration := end.Sub(start).Milliseconds()
 
-	cloudResponse.URL = url
-	cloudResponse.ResponseCode = response.Status
-	cloudResponse.Ping = int(duration)
+	requestResult.URL = url
+	requestResult.Code = response.Status
+	requestResult.Ping = int(duration)
 
 	defer response.Body.Close()
 	return
 }
 
-func PingClouds() CloudsResponses {
+func PingClouds() RequestResults {
 	cloudsInfo := GetCloudsInfo()
-	responses := make(CloudsResponses, len(cloudsInfo))
+	responses := make(RequestResults, len(cloudsInfo))
 
 	jobs := make(chan job, len(cloudsInfo))
 	results := make(chan result, len(cloudsInfo))
