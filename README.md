@@ -1,8 +1,15 @@
-Реализация https://www.cloudping.info/ на Go
+# Clouds Echo
+Реализация https://www.cloudping.info/ на Go, плюс проверки для запрещенных и разрешенных ресурсов
 
-Запрос: GET http://localhost:8080/echo/all
+## Запросы
+GET http://localhost:8080/echo/clouds
 
-Ответ: JSON 
+GET http://localhost:8080/echo/forbidden
+
+GET http://localhost:8080/echo/allowed
+
+## Ответ
+```json 
 [
   {
     "url": "https://dynamodb.us-east-1.amazonaws.com/ping",
@@ -10,3 +17,4 @@
     "responsecode": "200 OK"
   },
 ...
+ ``` 
